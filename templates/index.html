@@ -15,6 +15,40 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap"
       rel="stylesheet"
     />
+    <style>
+      /* Add CSS for animation here */
+      @keyframes slideIn {
+        from {
+          transform: translateY(100px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .center-pie-chart {
+        animation: slideIn 1s ease forwards;
+      }
+
+      /* เพิ่ม CSS ที่ตกแต่งหน้า Feed ที่คุณต้องการ */
+      .feed {
+        animation: fadeIn 1s ease;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
   </head>
   <body>
     <h1>Sentiment Analysis</h1>
@@ -33,25 +67,20 @@
       </div>
       <div class="grid-item feed">
         <h1>Feed</h1>
-        <ul>
-         {% for comment in feed_comments %}
-         <li>
-           <p>
-             {{ comment.id + 1 }} {{ comment.content }}
-             <span style="font-weight: bold">{{ comment.predict }}</span>
-             {% if comment.predict == 'negative' %}
-               😠
-             {% elif comment.predict == 'positive' %}
-               😍
-             {% else %}
-               😑
-             {% endif %}
-             {{ comment.time }}
-           </p>
-         </li>
-         {% endfor %}
-       </ul>
-       
+        
+        <ul class="feed">
+          {% for comment in feed_comments %}
+          <li>
+            <p>
+              {{ comment.id + 1 }} {{ comment.content }}
+              <span style="font-weight: bold">{{ comment.predict }}</span>
+              {% if comment.predict == 'negative' %} 😠 {% elif comment.predict
+              == 'positive' %} 😍 {% else %} 😑 {% endif %} {{ comment.time }}
+            </p>
+          </li>
+          {% endfor %}
+        </ul>
+        <button onclick="clearFeed()" class="clear-button">Clear Feed</button>
       </div>
     </div>
     <script>
@@ -59,22 +88,49 @@
       fetch("/feed_summary")
         .then((response) => response.json())
         .then((data) => {
-          var ctx = document.getElementById("pieChart").getContext("2d");
-          var pieChart = new Chart(ctx, {
-            type: "pie",
-            data: {
-              labels: ["negative", "positive", "neural"],
-              datasets: [
-                {
-                  data: data.values,
-                  backgroundColor: ["#FF8787", "#BCE29E", "#F9F3CC"],
-                },
-              ],
-            },
-          });
+          if (data.values.length > 0) {
+            var ctx = document.getElementById("pieChart").getContext("2d");
+
+            var labels = data.labels;
+            var values = data.values;
+
+            // Create an array to store the background colors for each label
+            var backgroundColors = [];
+
+            // Define a color palette for your labels
+            var colorPalette = {
+              positive: "#BCE29E",
+              neutral: "#F9F3CC",
+              negative: "#FF8787",
+              // Add more colors and labels as needed
+            };
+
+            // Populate the backgroundColors array based on the labels
+            labels.forEach(function (label) {
+              backgroundColors.push(colorPalette[label]);
+            });
+
+            var pieChart = new Chart(ctx, {
+              type: "pie",
+              data: {
+                labels: labels,
+                datasets: [
+                  {
+                    data: values,
+                    backgroundColor: backgroundColors,
+                  },
+                ],
+              },
+            });
+          }
         });
 
-     
+      function clearFeed() {
+        fetch("/clear_feed", { method: "POST" }).then((response) => {
+          // Reload the page after clearing the feed
+          location.reload();
+        });
+      }
     </script>
   </body>
 </html>

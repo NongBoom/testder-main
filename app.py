@@ -17,7 +17,7 @@ def save(): #โมดูลแสดงข้อมูล
     textinput = request.form.get('textarea') # รับข้อความจาก form หน้า index.html
     # print(textinput)
     p = predict(textinput) # ทำนายข้อความ
-    dictlabel = {'pos': 'positive', 'neu': 'neural', 'neg': 'negative'}
+    dictlabel = {'pos': 'positive', 'neu': 'neutral', 'neg': 'negative'}
     label = dictlabel[p[0]]
     cid = len(feed_comments)
     feed_comments.append({"id": cid, "content": textinput, "predict": label,"time": now()}) # save id ข้อความ ประเภทข้อความ เวลา
@@ -36,5 +36,10 @@ def feed_summary():
     values = list(content_summary.values())
 
     return jsonify(labels=labels, values=values)
+
+@app.route('/clear_feed', methods=['POST'])
+def clear_feed():
+    feed_comments.clear()  # Clear the list of feed comments
+    return redirect(url_for('index'))
 
 app.run(debug=True)

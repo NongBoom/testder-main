@@ -1,3 +1,4 @@
+/* สไตล์ทั่วไป */
 body {
   font-family: 'Noto Sans Thai', sans-serif;
   background-color: #f4f4f4;
@@ -42,6 +43,7 @@ form {
   margin: 20px;
 }
 
+/* สไตล์สำหรับฟอร์มและปุ่ม */
 textarea {
   font-family: "Noto Sans Thai", sans-serif;
   width: 400px;
@@ -64,6 +66,11 @@ button {
   cursor: pointer;
 }
 
+button:hover {
+  background-color: #45a049;
+}
+
+/* สไตล์ Feed และ Clear Feed ปุ่ม */
 ul {
   list-style: none;
 }
@@ -75,4 +82,19 @@ li {
 #pieChart {
   max-height: 100%;
   max-width: 100%;
+}
+
+.clear-button {
+  font-size: 14px;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background-color: #f30000;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s; /* เพิ่มการเปลี่ยนแปลงสีเรื่อย ๆ สำหรับ hover effect */
+}
+
+.clear-button:hover {
+  background-color: #f06565; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
 }
